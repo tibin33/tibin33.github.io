@@ -2,113 +2,248 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- 占位符模板：把 <TIBIN> 换成你的真实姓名 -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TIBIN · 个人主页</title>
-<meta name="description" content="TIBIN 的个人作品集与技术博客，记录项目开发及个人生活。">
-<!-- Open Graph：分享到微信/QQ/社交平台时显示的信息 -->
+<meta name="description" content="TIBIN 的个人网站：作品集、博客与资源下载，部署在树莓派 3B 上，GitHub Pages 作临时托管。">
 <meta property="og:title" content="TIBIN · 个人主页">
+<meta property="og:description" content="独立开发者，专注 Web 前端与树莓派 DIY。">
 <meta property="og:type" content="website">
-<meta property="og:description" content="TIBIN 的个人作品集与技术博客，记录项目开发及个人生活。">
-<meta property="og:url" content="https://tibin33.github.io/">
-<!-- 系统字体优先，移动端与桌面端皆可用，零外部依赖 -->
 <style>
   :root{
-    --bg:#faf8f6;          /* 页面背景 */
-    --surface:#ffffff;     /* 卡片背景 */
-    --text:#24272e;        /* 正文 */
-    --text-2:#5c6470;      /* 次要文字 */
-    --accent:#c2185b;      /* 强调色（可按品牌风格改） */
-    --border:#e9e3dd;      /* 分隔线 */
+    --bg:#fdfbf9; --surface:#ffffff; --text:#2b2520; --muted:#7a7068;
+    --border:#ece4dc; --accent:#c2185b; --accent-soft:#fbe9f1;
+    --radius:12px; --shadow:0 1px 3px rgba(0,0,0,.04);
+    --maxw:720px;
+    --fs-h1:40px; --fs-h2:28px; --fs-h3:20px; --fs-body:16px; --fs-sm:13.5px;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-    background:var(--bg);color:var(--text);
-    line-height:1.75;min-height:100dvh;
-    display:flex;flex-direction:column;
-  }
-  .container{max-width:720px;margin:0 auto;padding:0 24px;width:100%}
-  main{flex:1;display:flex;align-items:center;padding:48px 0}
-  .card{
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:16px;padding:40px 32px;width:100%;
-  }
-  .avatar{
-    width:80px;height:80px;border-radius:50%;
-    background:var(--accent);color:#fff;
-    display:flex;align-items:center;justify-content:center;
-    font-size:32px;font-weight:700;margin-bottom:20px;
-  }
-  h1{font-size:30px;line-height:1.3;margin-bottom:6px}
-  .tagline{font-size:16px;color:var(--text-2);margin-bottom:28px}
-  .about{font-size:15px;color:var(--text-2);margin-bottom:28px}
-  .links{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px}
-  .links a{
-    text-decoration:none;color:var(--accent);
-    border:1px solid var(--border);border-radius:99px;
-    padding:8px 18px;font-size:14px;transition:all .15s;
-  }
-  .links a:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .contact{
-    border-top:1px solid var(--border);padding-top:20px;
-    font-size:13.5px;color:var(--text-2);
-  }
-  .contact a{color:var(--accent);text-decoration:none}
-  footer{
-    text-align:center;padding:24px 0;font-size:12.5px;color:#9aa0a8;
-  }
-  /* 深色模式：跟随系统，无障碍友好 */
   @media (prefers-color-scheme: dark){
     :root{
-      --bg:#14171c;--surface:#1c2026;--text:#e8eaed;
-      --text-2:#a6adb6;--border:#2c323a;
+      --bg:#1a1715; --surface:#241f1c; --text:#efeae6; --muted:#a89c92;
+      --border:#352e29; --accent:#e8659b; --accent-soft:#3a2230;
+      --shadow:0 1px 3px rgba(0,0,0,.3);
     }
   }
-  /* 超小屏（窄手机）优化 */
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.7;
+    font-size:var(--fs-body); -webkit-font-smoothing:antialiased;
+  }
+  .container{max-width:var(--maxw); margin:0 auto; padding:0 20px}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* 导航 */
+  .nav{position:sticky; top:0; z-index:10; background:color-mix(in srgb,var(--bg) 88%,transparent);
+    backdrop-filter:saturate(180%) blur(8px); border-bottom:1px solid var(--border)}
+  .nav-inner{max-width:var(--maxw); margin:0 auto; padding:12px 20px; display:flex;
+    align-items:center; justify-content:space-between}
+  .logo{font-weight:700; letter-spacing:.04em; color:var(--text)}
+  .nav-links{display:flex; gap:18px; font-size:var(--fs-sm)}
+  .nav-links a{color:var(--muted)} .nav-links a:hover{color:var(--accent); text-decoration:none}
+
+  /* Hero */
+  .hero{padding:64px 20px 40px; text-align:center}
+  .avatar{width:80px; height:80px; border-radius:50%; display:block; margin:0 auto 20px;
+    box-shadow:var(--shadow)}
+  h1{font-size:var(--fs-h1); line-height:1.15; letter-spacing:.02em}
+  .intro{color:var(--muted); max-width:520px; margin:14px auto 0; font-size:var(--fs-body)}
+  .btn-row{display:flex; gap:12px; justify-content:center; margin-top:24px; flex-wrap:wrap}
+  .btn{display:inline-block; padding:10px 22px; border-radius:999px; font-size:var(--fs-sm);
+    font-weight:600; cursor:pointer; border:1px solid transparent; transition:.15s}
+  .btn-primary{background:var(--accent); color:#fff}
+  .btn-primary:hover{filter:brightness(1.06); text-decoration:none}
+  .btn-ghost{background:transparent; color:var(--text); border-color:var(--border)}
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent); text-decoration:none}
+
+  /* 区块标题 */
+  .section-title{font-size:var(--fs-h2); margin:48px 0 20px; letter-spacing:.01em}
+  section .section-title{margin-top:0}
+
+  /* 项目卡片 */
+  .grid{display:grid; gap:16px}
+  .card{display:block; background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; color:inherit}
+  .card:hover{text-decoration:none; border-color:var(--accent)}
+  .card-cover{width:100%; height:auto; display:block; background:var(--accent-soft)}
+  .card-body{padding:16px 18px}
+  .card-body h3{font-size:var(--fs-h3); margin-bottom:6px}
+  .card-body p{color:var(--muted); font-size:var(--fs-sm)}
+  .tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px}
+  .tag{font-size:12px; color:var(--muted); background:var(--bg);
+    border:1px solid var(--border); border-radius:999px; padding:2px 10px}
+
+  /* 项目详情 */
+  .project{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:24px; margin-top:8px}
+  .project h3{font-size:var(--fs-h3); margin-bottom:4px}
+  .project .lead{color:var(--muted); font-size:var(--fs-sm); margin-bottom:16px}
+  .project p{margin:12px 0; font-size:var(--fs-body)}
+  .diagram{width:100%; height:auto; margin:18px 0; background:var(--bg);
+    border:1px solid var(--border); border-radius:var(--radius); padding:12px}
+  .diag-box{fill:var(--surface); stroke:var(--border); stroke-width:1.5}
+  .diag-title{fill:var(--text); font-size:15px; font-weight:600}
+  .diag-sub{fill:var(--muted); font-size:12px}
+  .diag-line{stroke:var(--accent); stroke-width:2; fill:none}
+  .diag-label{fill:var(--accent); font-size:13px; font-weight:600}
+  .diag-accent{fill:var(--accent)}
+
+  /* 博客空状态 */
+  .empty{text-align:center; padding:48px 20px; color:var(--muted);
+    background:var(--surface); border:1px dashed var(--border); border-radius:var(--radius)}
+  .empty .big{font-size:var(--fs-h3); color:var(--text); margin-bottom:8px}
+  .empty .sub{font-size:var(--fs-sm)}
+
+  /* 下载提示 */
+  .notice{background:var(--accent-soft); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px; font-size:var(--fs-sm); color:var(--text)}
+  .notice b{color:var(--accent)}
+
+  /* 页脚 */
+  .footer{border-top:1px solid var(--border); margin-top:56px; padding:28px 20px;
+    text-align:center; color:var(--muted); font-size:var(--fs-sm)}
+
   @media (max-width:420px){
-    .card{padding:28px 20px}
-    h1{font-size:26px}
+    :root{--fs-h1:32px; --fs-h2:24px; --fs-h3:19px; --fs-body:15px; --fs-sm:13px}
+    .hero{padding:48px 16px 32px}
+    .container,.nav-inner{padding-left:16px; padding-right:16px}
   }
 </style>
 </head>
 <body>
-<main>
-  <div class="container">
-    <div class="card">
-      <!-- 【占位符】初始用姓氏首字母，换成你的头像图后再改 -->
-      <div class="avatar" aria-hidden="true">T</div>
+<nav class="nav"><div class="nav-inner">
+  <a class="logo" href="#top">TIBIN</a>
+  <div class="nav-links">
+    <a href="#projects">项目</a>
+    <a href="#blog">博客</a>
+    <a href="#download">下载</a>
+  </div>
+</div></nav>
 
-      <h1>TIBIN</h1>
-      <p class="tagline">独立开发者，专注各类科技探索。</p>
+<main id="top">
+  <section class="hero container">
+    <svg class="avatar" viewBox="0 0 80 80" role="img" aria-label="TIBIN 头像">
+      <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#c2185b"/><stop offset="1" stop-color="#e8659b"/>
+      </linearGradient></defs>
+      <circle cx="40" cy="40" r="40" fill="url(#g)"/>
+      <text x="40" y="40" text-anchor="middle" dominant-baseline="central"
+        font-size="36" font-weight="700" fill="#fff"
+        font-family="system-ui,-apple-system,sans-serif">T</text>
+    </svg>
+    <h1>TIBIN</h1>
+    <p class="intro">独立开发者，喜欢把想法变成能跑起来的东西。专注 Web 前端与树莓派 DIY，最近把个人网站搬到了树莓派 3B 上，并用 GitHub Pages 作临时托管。</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="#projects">看项目</a>
+      <a class="btn btn-ghost" href="#blog">读博客</a>
+    </div>
+  </section>
 
-      <p class="about">
-        就读于北京邮电大学本科，业余时间折腾科技探索。
-        这里即将成为我的作品集和技术博客。
-      </p>
+  <section class="container" id="projects">
+    <h2 class="section-title">精选项目</h2>
+    <div class="grid">
+      <a class="card" href="#pi-site">
+        <svg class="card-cover" viewBox="0 0 400 160" role="img" aria-label="树莓派个人网站项目封面">
+          <rect width="400" height="160" fill="var(--accent-soft)"/>
+          <rect x="150" y="55" width="100" height="50" rx="8" fill="var(--accent)"/>
+          <text x="200" y="85" text-anchor="middle" font-size="16" font-weight="700"
+            fill="#fff" font-family="system-ui,sans-serif">Pi 3B</text>
+          <circle cx="60" cy="80" r="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/>
+          <text x="60" y="84" text-anchor="middle" font-size="11" fill="var(--muted)">访客</text>
+          <path d="M80 80 H148" stroke="var(--accent)" stroke-width="2" fill="none" marker-end="url(#a1)"/>
+          <defs><marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
+        </svg>
+        <div class="card-body">
+          <h3>树莓派个人网站：从零到公网</h3>
+          <p>把个人网站跑在树莓派 3B 上，GitHub Pages 作临时托管，外加口令保护的资源下载。</p>
+          <div class="tags"><span class="tag">HTML</span><span class="tag">树莓派 3B</span><span class="tag">静态站</span><span class="tag">Nginx / Caddy</span></div>
+        </div>
+      </a>
+    </div>
 
-      <div class="links">
-        <!-- 【占位符】有内容再启用对应链接，暂无就删掉该行 -->
-        <a href="https://github.com/tibin33">GitHub</a>
-        <!-- <a href="#blog">博客</a>
-        <a href="#projects">作品集</a> -->
-      </div>
+    <div class="project" id="pi-site">
+      <h3>树莓派个人网站：从零到公网</h3>
+      <div class="lead">纯静态 · 自托管 · 公网可访问</div>
 
-      <div class="contact">
-        联系我：
-        <a href="mailto:woshizhaixiangyu@163.com">woshizhaixiangyu@163.com</a>
-        <!-- 【占位符】如需微信/QQ，替换下面这行文字，不需要就删掉
-        · 微信：【占位符-微信号】 -->
+      <p><b>背景。</b>一直想把个人网站掌握在自己手里。树莓派 3B 只有 1GB 内存，跑 WordPress 这类动态站点会很吃力，但纯静态站点对它来说绰绰有余——没有数据库、没有运行时框架，靠 Nginx / Caddy 直接输出文件即可，内存占用极低、SD 卡损耗也小。</p>
+
+      <p><b>部署形态。</b>网站本体先托管在 GitHub Pages（无域名时期也能公网访问、可灾备）；等树莓派与外接硬盘就绪后，再把资源下载服务迁移过去。两套环境共用同一份手写 HTML，内容始终一致。</p>
+
+      <!-- 项目概略图：架构示意（内联 SVG，零外部依赖） -->
+      <svg class="diagram" viewBox="0 0 760 320" role="img" aria-label="部署架构概略图：访客经 GitHub Pages 访问网站本体，经树莓派与外接硬盘访问口令保护的下载服务">
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+            <path d="M0,0 L7,3 L0,6 Z" class="diag-accent"/>
+          </marker>
+        </defs>
+
+        <!-- 访客 -->
+        <rect class="diag-box" x="30" y="125" width="130" height="70" rx="12"/>
+        <text class="diag-title" x="95" y="155" text-anchor="middle">访客浏览器</text>
+        <text class="diag-sub" x="95" y="175" text-anchor="middle">手机 / 桌面</text>
+
+        <!-- GitHub Pages -->
+        <rect class="diag-box" x="250" y="35" width="200" height="72" rx="12"/>
+        <text class="diag-title" x="350" y="66" text-anchor="middle">GitHub Pages</text>
+        <text class="diag-sub" x="350" y="86" text-anchor="middle">网站本体 · 公网 · 可灾备</text>
+
+        <!-- 树莓派 3B -->
+        <rect class="diag-box" x="250" y="200" width="200" height="72" rx="12"/>
+        <text class="diag-title" x="350" y="231" text-anchor="middle">树莓派 3B</text>
+        <text class="diag-sub" x="350" y="251" text-anchor="middle">家庭宽带出口 · 静态站</text>
+
+        <!-- 外接硬盘 / 下载 -->
+        <rect class="diag-box" x="510" y="200" width="220" height="72" rx="12"/>
+        <text class="diag-title" x="620" y="231" text-anchor="middle">外接硬盘</text>
+        <text class="diag-sub" x="620" y="251" text-anchor="middle">下载服务 · 口令保护</text>
+
+        <!-- 连线 -->
+        <path class="diag-line" d="M160 150 C200 120, 210 90, 248 70" marker-end="url(#arrow)"/>
+        <text class="diag-label" x="205" y="104" text-anchor="middle">网站</text>
+        <path class="diag-line" d="M160 170 C200 200, 210 220, 248 236" marker-end="url(#arrow)"/>
+        <text class="diag-label" x="205" y="216" text-anchor="middle">下载</text>
+        <path class="diag-line" d="M450 236 H506" marker-end="url(#arrow)"/>
+      </svg>
+
+      <p><b>成果。</b>单页 HTML+CSS+JS 控制在 300KB 以内，首屏无需等待；全站展示图总量 ≤10MB。下载服务由 Web 服务器的 Basic Auth 承担口令校验，前端零依赖、零改动即可生效。</p>
+
+      <div class="tags">
+        <span class="tag">HTML / CSS / JS</span>
+        <span class="tag">树莓派 3B（1GB）</span>
+        <span class="tag">Nginx / Caddy</span>
+        <span class="tag">GitHub Pages</span>
+        <span class="tag">相对路径 · 无硬编码域名</span>
       </div>
     </div>
-  </div>
+  </section>
+
+  <section class="container" id="blog">
+    <h2 class="section-title">最新文章</h2>
+    <div class="empty">
+      <div class="big">这里还空空如也~</div>
+      <div class="sub">博客即将上线，预计每月更新一篇。先去「项目」看看我在做什么吧。</div>
+    </div>
+  </section>
+
+  <section class="container" id="download">
+    <h2 class="section-title">资源下载</h2>
+    <div class="notice">
+      <b>下载服务运行在树莓派上</b>，由外接硬盘提供图片与短视频资源，访问需口令。
+      如需取用，请邮件联系站主索取口令。该服务上线前，此处暂以 GitHub Pages 承载网站本体。
+    </div>
+  </section>
 </main>
 
-<footer>© <span id="year"></span> TIBIN · 用 GitHub Pages 与树莓派构建
-PoweredBy:WorkBuddy</footer>
+<footer class="footer">
+  © <span id="year"></span> TIBIN ·
+  联系 <a href="https://github.com/tibin33" target="_blank" rel="noopener">GitHub</a>
+  （下载口令请邮件联系 <a href="mailto:you@example.com">you@example.com</a>）·
+  站点托管于 GitHub Pages 与树莓派
+</footer>
 
 <script>
-  // 自动更新版权年份，免手动维护
   document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 </body>
