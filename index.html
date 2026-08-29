@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- 占位符模板：把 <TIBIN> 换成你的真实姓名 -->
+<title>TIBIN · 个人主页</title>
+<meta name="description" content="TIBIN 的个人作品集与技术博客，记录项目开发及个人生活。">
+<!-- Open Graph：分享到微信/QQ/社交平台时显示的信息 -->
+<meta property="og:title" content="TIBIN · 个人主页">
+<meta property="og:type" content="website">
+<meta property="og:description" content="TIBIN 的个人作品集与技术博客，记录项目开发及个人生活。">
+<meta property="og:url" content="https://tibin33.github.io/">
+<!-- 系统字体优先，移动端与桌面端皆可用，零外部依赖 -->
+<style>
+  :root{
+    --bg:#faf8f6;          /* 页面背景 */
+    --surface:#ffffff;     /* 卡片背景 */
+    --text:#24272e;        /* 正文 */
+    --text-2:#5c6470;      /* 次要文字 */
+    --accent:#c2185b;      /* 强调色（可按品牌风格改） */
+    --border:#e9e3dd;      /* 分隔线 */
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--text);
+    line-height:1.75;min-height:100dvh;
+    display:flex;flex-direction:column;
+  }
+  .container{max-width:720px;margin:0 auto;padding:0 24px;width:100%}
+  main{flex:1;display:flex;align-items:center;padding:48px 0}
+  .card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:16px;padding:40px 32px;width:100%;
+  }
+  .avatar{
+    width:80px;height:80px;border-radius:50%;
+    background:var(--accent);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-size:32px;font-weight:700;margin-bottom:20px;
+  }
+  h1{font-size:30px;line-height:1.3;margin-bottom:6px}
+  .tagline{font-size:16px;color:var(--text-2);margin-bottom:28px}
+  .about{font-size:15px;color:var(--text-2);margin-bottom:28px}
+  .links{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+  .links a{
+    text-decoration:none;color:var(--accent);
+    border:1px solid var(--border);border-radius:99px;
+    padding:8px 18px;font-size:14px;transition:all .15s;
+  }
+  .links a:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .contact{
+    border-top:1px solid var(--border);padding-top:20px;
+    font-size:13.5px;color:var(--text-2);
+  }
+  .contact a{color:var(--accent);text-decoration:none}
+  footer{
+    text-align:center;padding:24px 0;font-size:12.5px;color:#9aa0a8;
+  }
+  /* 深色模式：跟随系统，无障碍友好 */
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#14171c;--surface:#1c2026;--text:#e8eaed;
+      --text-2:#a6adb6;--border:#2c323a;
+    }
+  }
+  /* 超小屏（窄手机）优化 */
+  @media (max-width:420px){
+    .card{padding:28px 20px}
+    h1{font-size:26px}
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="container">
+    <div class="card">
+      <!-- 【占位符】初始用姓氏首字母，换成你的头像图后再改 -->
+      <div class="avatar" aria-hidden="true">T</div>
+
+      <h1>TIBIN</h1>
+      <p class="tagline">独立开发者，专注各类科技探索。</p>
+
+      <p class="about">
+        就读于北京邮电大学本科，业余时间折腾科技探索。
+        这里即将成为我的作品集和技术博客。
+      </p>
+
+      <div class="links">
+        <!-- 【占位符】有内容再启用对应链接，暂无就删掉该行 -->
+        <a href="https://github.com/tibin33">GitHub</a>
+        <!-- <a href="#blog">博客</a>
+        <a href="#projects">作品集</a> -->
+      </div>
+
+      <div class="contact">
+        联系我：
+        <a href="mailto:woshizhaixiangyu@163.com">woshizhaixiangyu@163.com</a>
+        <!-- 【占位符】如需微信/QQ，替换下面这行文字，不需要就删掉
+        · 微信：【占位符-微信号】 -->
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>© <span id="year"></span> TIBIN · 用 GitHub Pages 与树莓派构建
+PoweredBy:WorkBuddy</footer>
+
+<script>
+  // 自动更新版权年份，免手动维护
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
