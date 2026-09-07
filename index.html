@@ -1,250 +1,723 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TIBIN · 个人主页</title>
-<meta name="description" content="TIBIN 的个人网站：作品集、博客与资源下载，部署在树莓派 3B 上，GitHub Pages 作临时托管。">
-<meta property="og:title" content="TIBIN · 个人主页">
-<meta property="og:description" content="独立开发者，专注 Web 前端与树莓派 DIY。">
-<meta property="og:type" content="website">
-<style>
-  :root{
-    --bg:#fdfbf9; --surface:#ffffff; --text:#2b2520; --muted:#7a7068;
-    --border:#ece4dc; --accent:#c2185b; --accent-soft:#fbe9f1;
-    --radius:12px; --shadow:0 1px 3px rgba(0,0,0,.04);
-    --maxw:720px;
-    --fs-h1:40px; --fs-h2:28px; --fs-h3:20px; --fs-body:16px; --fs-sm:13.5px;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#1a1715; --surface:#241f1c; --text:#efeae6; --muted:#a89c92;
-      --border:#352e29; --accent:#e8659b; --accent-soft:#3a2230;
-      --shadow:0 1px 3px rgba(0,0,0,.3);
+<html lang="zh-CN" data-page-node-id="f2eBJbnjBccJpkK8rtxBF7">
+<head data-page-node-id="jx3QT6xdLSOVXGOqvOfaNN">
+  <meta charset="UTF-8" data-page-node-id="wbiI0JjbtP7o0NycczGNta" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="ar2lpVSSDsWjLBvKGzJ4Fv" />
+  <meta name="description" content="自动化类2026级1班通知日历，一目了然查看班级各项事务的时间节点" data-page-node-id="2Mh8Ftw0pk6fSnEBlEVRfr" />
+  <title>自动化类2026级1班 · 通知日历</title>
+
+  <!-- FullCalendar 样式（jsDelivr 主源） -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css"
+        onerror="this.onerror=null;this.href='https://unpkg.com/fullcalendar@6.1.15/index.global.min.css';" data-page-node-id="LrT0mh1YEiwb7U107hsoYU" />
+
+  <style>
+    :root {
+      --color-urgent: #e5484d;
+      --color-urgent-bg: #fdecec;
+      --color-normal: #3b82f6;
+      --color-normal-bg: #eaf1fe;
+      --color-party: #22c55e;
+      --color-party-bg: #e8f8ee;
+
+      --text-strong: #111827;
+      --text-main: #374151;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --surface: #ffffff;
+      --surface-soft: #f9fafb;
+      --shadow: 0 1px 3px rgba(16, 24, 40, 0.08), 0 1px 2px rgba(16, 24, 40, 0.04);
+      --radius: 14px;
+
+      /* FullCalendar 主题变量 */
+      --fc-border-color: var(--border);
+      --fc-page-bg-color: var(--surface);
+      --fc-button-bg-color: var(--surface);
+      --fc-button-border-color: #d1d5db;
+      --fc-button-text-color: var(--text-main);
+      --fc-button-hover-bg-color: var(--surface-soft);
+      --fc-button-hover-border-color: #d1d5db;
+      --fc-button-active-bg-color: var(--color-normal);
+      --fc-button-active-border-color: var(--color-normal);
+      --fc-button-active-text-color: #ffffff;
+      --fc-today-bg-color: #fdf6e3;
+      --fc-event-bg-color: var(--color-normal);
+      --fc-event-border-color: var(--color-normal);
+      --fc-event-text-color: #ffffff;
     }
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  body{
-    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
-    background:var(--bg); color:var(--text); line-height:1.7;
-    font-size:var(--fs-body); -webkit-font-smoothing:antialiased;
-  }
-  .container{max-width:var(--maxw); margin:0 auto; padding:0 20px}
-  a{color:var(--accent); text-decoration:none}
-  a:hover{text-decoration:underline}
 
-  /* 导航 */
-  .nav{position:sticky; top:0; z-index:10; background:color-mix(in srgb,var(--bg) 88%,transparent);
-    backdrop-filter:saturate(180%) blur(8px); border-bottom:1px solid var(--border)}
-  .nav-inner{max-width:var(--maxw); margin:0 auto; padding:12px 20px; display:flex;
-    align-items:center; justify-content:space-between}
-  .logo{font-weight:700; letter-spacing:.04em; color:var(--text)}
-  .nav-links{display:flex; gap:18px; font-size:var(--fs-sm)}
-  .nav-links a{color:var(--muted)} .nav-links a:hover{color:var(--accent); text-decoration:none}
+    * { box-sizing: border-box; }
 
-  /* Hero */
-  .hero{padding:64px 20px 40px; text-align:center}
-  .avatar{width:80px; height:80px; border-radius:50%; display:block; margin:0 auto 20px;
-    box-shadow:var(--shadow)}
-  h1{font-size:var(--fs-h1); line-height:1.15; letter-spacing:.02em}
-  .intro{color:var(--muted); max-width:520px; margin:14px auto 0; font-size:var(--fs-body)}
-  .btn-row{display:flex; gap:12px; justify-content:center; margin-top:24px; flex-wrap:wrap}
-  .btn{display:inline-block; padding:10px 22px; border-radius:999px; font-size:var(--fs-sm);
-    font-weight:600; cursor:pointer; border:1px solid transparent; transition:.15s}
-  .btn-primary{background:var(--accent); color:#fff}
-  .btn-primary:hover{filter:brightness(1.06); text-decoration:none}
-  .btn-ghost{background:transparent; color:var(--text); border-color:var(--border)}
-  .btn-ghost:hover{border-color:var(--accent); color:var(--accent); text-decoration:none}
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                   "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      color: var(--text-main);
+      background: #f2f4f7;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
 
-  /* 区块标题 */
-  .section-title{font-size:var(--fs-h2); margin:48px 0 20px; letter-spacing:.01em}
-  section .section-title{margin-top:0}
+    a { color: inherit; }
 
-  /* 项目卡片 */
-  .grid{display:grid; gap:16px}
-  .card{display:block; background:var(--surface); border:1px solid var(--border);
-    border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; color:inherit}
-  .card:hover{text-decoration:none; border-color:var(--accent)}
-  .card-cover{width:100%; height:auto; display:block; background:var(--accent-soft)}
-  .card-body{padding:16px 18px}
-  .card-body h3{font-size:var(--fs-h3); margin-bottom:6px}
-  .card-body p{color:var(--muted); font-size:var(--fs-sm)}
-  .tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px}
-  .tag{font-size:12px; color:var(--muted); background:var(--bg);
-    border:1px solid var(--border); border-radius:999px; padding:2px 10px}
+    /* ---------- 顶部 ---------- */
+    .site-header {
+      background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+      color: #ffffff;
+      padding: 28px 20px 24px;
+      text-align: center;
+    }
+    .site-header h1 {
+      margin: 0;
+      font-size: clamp(1.25rem, 4vw, 1.7rem);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .site-header .sub {
+      margin: 6px 0 0;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
 
-  /* 项目详情 */
-  .project{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
-    box-shadow:var(--shadow); padding:24px; margin-top:8px}
-  .project h3{font-size:var(--fs-h3); margin-bottom:4px}
-  .project .lead{color:var(--muted); font-size:var(--fs-sm); margin-bottom:16px}
-  .project p{margin:12px 0; font-size:var(--fs-body)}
-  .diagram{width:100%; height:auto; margin:18px 0; background:var(--bg);
-    border:1px solid var(--border); border-radius:var(--radius); padding:12px}
-  .diag-box{fill:var(--surface); stroke:var(--border); stroke-width:1.5}
-  .diag-title{fill:var(--text); font-size:15px; font-weight:600}
-  .diag-sub{fill:var(--muted); font-size:12px}
-  .diag-line{stroke:var(--accent); stroke-width:2; fill:none}
-  .diag-label{fill:var(--accent); font-size:13px; font-weight:600}
-  .diag-accent{fill:var(--accent)}
+    /* ---------- 图例 ---------- */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      justify-content: center;
+      align-items: center;
+      padding: 14px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-main);
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 7px; }
+    .dot {
+      width: 11px; height: 11px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    .dot-urgent { background: var(--color-urgent); }
+    .dot-normal { background: var(--color-normal); }
+    .dot-party  { background: var(--color-party); }
 
-  /* 博客空状态 */
-  .empty{text-align:center; padding:48px 20px; color:var(--muted);
-    background:var(--surface); border:1px dashed var(--border); border-radius:var(--radius)}
-  .empty .big{font-size:var(--fs-h3); color:var(--text); margin-bottom:8px}
-  .empty .sub{font-size:var(--fs-sm)}
+    /* ---------- 主体布局 ---------- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 20px;
+      align-items: start;
+    }
 
-  /* 下载提示 */
-  .notice{background:var(--accent-soft); border:1px solid var(--border); border-radius:var(--radius);
-    padding:18px 20px; font-size:var(--fs-sm); color:var(--text)}
-  .notice b{color:var(--accent)}
+    .hint {
+      margin: 0 0 12px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
 
-  /* 页脚 */
-  .footer{border-top:1px solid var(--border); margin-top:56px; padding:28px 20px;
-    text-align:center; color:var(--muted); font-size:var(--fs-sm)}
+    /* ---------- 卡片 ---------- */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+    .calendar-card { padding: 12px; }
 
-  @media (max-width:420px){
-    :root{--fs-h1:32px; --fs-h2:24px; --fs-h3:19px; --fs-body:15px; --fs-sm:13px}
-    .hero{padding:48px 16px 32px}
-    .container,.nav-inner{padding-left:16px; padding-right:16px}
-  }
-</style>
+    /* ---------- 侧栏 ---------- */
+    .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 0 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-strong);
+    }
+    .panel-title .count {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 1px 9px;
+    }
+
+    .today-panel {
+      background: linear-gradient(135deg, #eff6ff, #eef2ff);
+      border: 1px solid #dbeafe;
+    }
+    .today-date { font-weight: 700; color: var(--text-strong); font-size: 1.05rem; }
+    .today-stats {
+      display: flex;
+      gap: 18px;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      color: var(--text-main);
+    }
+    .today-stats b { color: var(--color-normal); font-size: 1.05rem; }
+
+    /* ---------- 列表 ---------- */
+    .notice-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    .notice-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--color-normal);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font: inherit;
+      transition: box-shadow 0.15s ease, transform 0.15s ease;
+    }
+    .notice-item:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+    .notice-item.type-urgent { border-left-color: var(--color-urgent); }
+    .notice-item.type-normal { border-left-color: var(--color-normal); }
+    .notice-item.type-party  { border-left-color: var(--color-party); }
+
+    .notice-item .row1 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: space-between;
+    }
+    .notice-item .title {
+      font-weight: 600;
+      color: var(--text-strong);
+      font-size: 0.93rem;
+      line-height: 1.35;
+    }
+    .notice-item .meta {
+      margin-top: 4px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 1px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .chip {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 1px 8px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .chip-today { background: var(--color-normal-bg); color: var(--color-normal); }
+    .chip-urgent { background: var(--color-urgent-bg); color: var(--color-urgent); }
+
+    .empty {
+      margin: 0;
+      padding: 14px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      background: var(--surface-soft);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+    }
+
+    /* ---------- 弹窗 ---------- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 460px;
+      max-height: 86vh;
+      overflow: auto;
+      padding: 24px 22px;
+      position: relative;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      animation: modal-in 0.18s ease;
+    }
+    @keyframes modal-in {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px; right: 14px;
+      width: 32px; height: 32px;
+      border: none;
+      background: var(--surface-soft);
+      border-radius: 50%;
+      font-size: 20px;
+      line-height: 1;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .modal-close:hover { background: #e5e7eb; color: var(--text-strong); }
+
+    .modal-head { display: flex; align-items: flex-start; gap: 10px; justify-content: space-between; }
+    .modal-head h2 { margin: 0; font-size: 1.2rem; color: var(--text-strong); line-height: 1.3; }
+
+    .meta { margin: 16px 0; border-top: 1px solid var(--border); }
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .meta-label { color: var(--text-muted); flex-shrink: 0; }
+    .meta-row > span:last-child { text-align: right; color: var(--text-strong); font-weight: 500; }
+
+    .desc-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .desc p { margin: 0; font-size: 0.92rem; color: var(--text-main); }
+
+    .day-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    .day-event-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      text-align: left;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font: inherit;
+      transition: background 0.15s ease;
+    }
+    .day-event-item:hover { background: var(--surface-soft); }
+    .day-event-title { font-weight: 600; color: var(--text-strong); font-size: 0.93rem; }
+    .day-event-meta { margin-left: auto; font-size: 0.78rem; color: var(--text-muted); }
+
+    /* ---------- 页脚 ---------- */
+    .site-footer {
+      text-align: center;
+      padding: 18px 16px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    /* ---------- 响应式 ---------- */
+    @media (max-width: 960px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { order: 2; }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 12px 10px 28px; }
+      .calendar-card { padding: 8px; }
+      .fc .fc-toolbar { flex-wrap: wrap; gap: 6px; }
+      .fc .fc-toolbar-title { font-size: 1rem !important; }
+      .fc .fc-button { padding: 0.3em 0.5em !important; font-size: 0.85rem !important; }
+      .fc .fc-daygrid-day-number { font-size: 0.8rem; }
+    }
+  </style>
 </head>
-<body>
-<nav class="nav"><div class="nav-inner">
-  <a class="logo" href="#top">TIBIN</a>
-  <div class="nav-links">
-    <a href="#projects">项目</a>
-    <a href="#blog">博客</a>
-    <a href="#download">下载</a>
+
+<body data-page-node-id="uqQDeHwA3MlCYpyDVcub5W">
+  <header class="site-header" data-page-node-id="5c0d0koAFTBL5EdQpM2TQo">
+    <h1 data-page-node-id="fGVFtTcxmLXBDp96siqYvZ">自动化类2026级1班 · 通知日历</h1>
+    <p class="sub" data-page-node-id="6wAR9IqenRFQ3TB7F77llV">掌握每项事务的时间节点，不错过任何重要通知</p>
+  </header>
+
+  <div class="legend" aria-label="通知类型图例" data-page-node-id="9j8I7cGRixAnQ3dzsnZ19w">
+    <span class="legend-item" data-page-node-id="L23HHw016bORAMkVuu3sCT"><i class="dot dot-urgent" data-page-node-id="Q09Dj4hGXEKzDKhxGtPyX6"></i>紧急截止</span>
+    <span class="legend-item" data-page-node-id="APHzumTLX0vAygE8g3E3x7"><i class="dot dot-normal" data-page-node-id="BFQMYYSymaia3z0BlyUPMn"></i>常规通知</span>
+    <span class="legend-item" data-page-node-id="PVpU4uwEcQfnTAlvKH3fxi"><i class="dot dot-party" data-page-node-id="15ravDEPfXa7sXITpUmT8u"></i>党团相关</span>
   </div>
-</div></nav>
 
-<main id="top">
-  <section class="hero container">
-    <svg class="avatar" viewBox="0 0 80 80" role="img" aria-label="TIBIN 头像">
-      <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stop-color="#c2185b"/><stop offset="1" stop-color="#e8659b"/>
-      </linearGradient></defs>
-      <circle cx="40" cy="40" r="40" fill="url(#g)"/>
-      <text x="40" y="40" text-anchor="middle" dominant-baseline="central"
-        font-size="36" font-weight="700" fill="#fff"
-        font-family="system-ui,-apple-system,sans-serif">T</text>
-    </svg>
-    <h1>TIBIN</h1>
-    <p class="intro">独立开发者，喜欢把想法变成能跑起来的东西。专注 Web 前端与树莓派 DIY，最近把个人网站搬到了树莓派 3B 上，并用 GitHub Pages 作临时托管。</p>
-    <div class="btn-row">
-      <a class="btn btn-primary" href="#projects">看项目</a>
-      <a class="btn btn-ghost" href="#blog">读博客</a>
+  <div class="container" data-page-node-id="ppSCDY0CJANiGCmBMl107T">
+    <div class="layout" data-page-node-id="6KpfQnTdrVJIKHC2fNONG8">
+      <section class="card calendar-card" aria-label="通知日历" data-page-node-id="vmFZioi6CzBD5PzcM45sKf">
+        <p class="hint" data-page-node-id="TirwJdYraBATcODLVvl5dA">点击日期查看当天通知，点击事件查看详情</p>
+        <div id="calendar" data-page-node-id="RxNfAv5jvS9LwbzsSmnj30"></div>
+      </section>
+
+      <aside class="sidebar" data-page-node-id="nPyW3Zrfd6uJWMJ4CvHe2l">
+        <section class="card today-panel" id="today-panel" aria-label="今日概览" data-page-node-id="rFv3aWbFm8TtBTqb8n1fyF"></section>
+
+        <section class="card" aria-label="进行中的通知" data-page-node-id="iCcDU0PxIQeFe9ruOXzfxu">
+          <h2 class="panel-title" data-page-node-id="F4Tq7FJTuBIkYAUCasJ48z">进行中 <span class="count" id="inprogress-count" data-page-node-id="aBU5l1qqPqV2p04spFyPIN">0</span></h2>
+          <ul class="notice-list" id="inprogress-list" data-page-node-id="YmBIjjKUaN8ZVcbpLBo7Pq"></ul>
+        </section>
+
+        <section class="card" aria-label="即将截止的通知" data-page-node-id="5FFQoS2uDSZ2EA6RCltWbx">
+          <h2 class="panel-title" data-page-node-id="599s7ypPb6Ad2msjbYewC4">即将截止 <span class="count" id="deadline-count" data-page-node-id="NX9D3HCZnkxVDlIIELiyZT">0</span></h2>
+          <ul class="notice-list" id="deadline-list" data-page-node-id="QWKBEMSI2EVE0vgKySjruI"></ul>
+        </section>
+
+        <section class="card" aria-label="全部通知" data-page-node-id="iRpvZwQQ90BoCzhPklF436">
+          <h2 class="panel-title" data-page-node-id="KgK0ODmac8OsimJ9thQ4vS">全部通知 <span class="count" id="all-count" data-page-node-id="fKBssDHSmj5gfbHfZg3C7W">0</span></h2>
+          <ul class="notice-list" id="all-list" data-page-node-id="bkWgOEuzr2e7iid6vTEio8"></ul>
+        </section>
+      </aside>
     </div>
-  </section>
+  </div>
 
-  <section class="container" id="projects">
-    <h2 class="section-title">精选项目</h2>
-    <div class="grid">
-      <a class="card" href="#pi-site">
-        <svg class="card-cover" viewBox="0 0 400 160" role="img" aria-label="树莓派个人网站项目封面">
-          <rect width="400" height="160" fill="var(--accent-soft)"/>
-          <rect x="150" y="55" width="100" height="50" rx="8" fill="var(--accent)"/>
-          <text x="200" y="85" text-anchor="middle" font-size="16" font-weight="700"
-            fill="#fff" font-family="system-ui,sans-serif">Pi 3B</text>
-          <circle cx="60" cy="80" r="14" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/>
-          <text x="60" y="84" text-anchor="middle" font-size="11" fill="var(--muted)">访客</text>
-          <path d="M80 80 H148" stroke="var(--accent)" stroke-width="2" fill="none" marker-end="url(#a1)"/>
-          <defs><marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-            <path d="M0,0 L6,3 L0,6 Z" fill="var(--accent)"/></marker></defs>
-        </svg>
-        <div class="card-body">
-          <h3>树莓派个人网站：从零到公网</h3>
-          <p>把个人网站跑在树莓派 3B 上，GitHub Pages 作临时托管，外加口令保护的资源下载。</p>
-          <div class="tags"><span class="tag">HTML</span><span class="tag">树莓派 3B</span><span class="tag">静态站</span><span class="tag">Nginx / Caddy</span></div>
-        </div>
-      </a>
+  <footer class="site-footer" data-page-node-id="vCBpQqYieozB2GH9gO5cZh">
+    本页仅汇总公开通知的关键信息，不含内部文件或链接。具体操作请以官方通知为准。
+  </footer>
+
+  <!-- 详情弹窗 -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-label="通知详情" data-page-node-id="ZHrClKntEEKBEmUiDdXQhq">
+    <div class="modal" data-page-node-id="FetgfAPzqS1L3EOnxIBMtY">
+      <button class="modal-close" id="modal-close" aria-label="关闭" data-page-node-id="wgxwfk1j5CURjeC2yP3Lp8">×</button>
+      <div id="modal-content" data-page-node-id="BTCNXy14Pa8HtTBP6tseHs"></div>
     </div>
+  </div>
 
-    <div class="project" id="pi-site">
-      <h3>树莓派个人网站：从零到公网</h3>
-      <div class="lead">纯静态 · 自托管 · 公网可访问</div>
+  <!-- FullCalendar 核心库（jsDelivr 主源，失败自动回退 unpkg） -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  <script>
+    if (typeof FullCalendar === 'undefined') {
+      document.write('<script src="https://unpkg.com/fullcalendar@6.1.15/index.global.min.js"><\/script>');
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/locales-all.global.min.js"></script>
+  <script>
+    if (typeof FullCalendar === 'undefined' || !FullCalendar.globalLocales || !FullCalendar.globalLocales.length) {
+      document.write('<script src="https://unpkg.com/fullcalendar@6.1.15/locales-all.global.min.js"><\/script>');
+    }
+  </script>
 
-      <p><b>背景。</b>一直想把个人网站掌握在自己手里。树莓派 3B 只有 1GB 内存，跑 WordPress 这类动态站点会很吃力，但纯静态站点对它来说绰绰有余——没有数据库、没有运行时框架，靠 Nginx / Caddy 直接输出文件即可，内存占用极低、SD 卡损耗也小。</p>
+  <script>
+  /* ============================================================
+   * 通知数据：后续新增通知，只需在下面数组里按同样格式添加一条即可。
+   * 字段说明：
+   *   - start / end：开始、截止日期（"YYYY-MM-DD"，end 为截止当天，含当天）
+   *   - type：urgent=紧急截止(红) | normal=常规通知(蓝) | party=党团相关(绿)
+   *   - 单日事件省略 end 即可
+   * ============================================================ */
+  const notices = [
+    {
+      id: 1,
+      title: '班委竞选会议',
+      start: '2026-09-07',
+      type: 'party',
+      source: '临时负责人通知',
+      description: '今晚 20:00 通过腾讯会议线上进行，请提前下载并登录腾讯会议，会议号当天发在班级群。投票采用微信小程序，链接当天发群里。候选人按岗位顺序发言，每人控制在 3 分钟以内，团支书、班长岗位可延长至 5 分钟，同岗位发言顺序随机抽签决定。'
+    },
+    {
+      id: 2,
+      title: '班委竞选报名截止',
+      start: '2026-09-06',
+      type: 'urgent',
+      source: '临时负责人通知',
+      description: '有意竞选班委的同学请尽快私信临时负责人报名，报名已于 9月6日 22:00 截止。共设 9 个岗位：团支书兼副班长、班长兼副团支书、宣传委员、组织委员兼纪律委员、劳动委员（兼男/女生生活委员）、文体委员、学习委员、心理委员、生活委员，其中前 5 个岗位须为团员。可同时报多个岗位，前面未选上仍可竞聘后续岗位。'
+    },
+    {
+      id: 3,
+      title: '运动与康复（保健课）线上修读申请',
+      start: '2026-09-14',
+      end: '2026-10-04',
+      type: 'normal',
+      source: '教务处通知',
+      description: '因身体原因（六个月内不能恢复的伤病，拉伤扭伤除外）无法修读普通体育课的学生，请在期限内于网上办事大厅完成「运动与康复」线上申请，需准备北京市三甲医院三个月内的诊断证明。申请未通过前需到原体育班级跟班上课。沙河校区咨询 QQ 群：262479033。'
+    },
+    {
+      id: 4,
+      title: '英语分级测试（模拟）',
+      start: '2026-09-05',
+      end: '2026-09-07',
+      type: 'normal',
+      source: '教务处通知',
+      description: '定于 9月5日 8:00 — 9月7日 24:00 进行模拟测试，线上进行，请用电脑独立完成。内容为听力、阅读、词汇语法、完型填空四部分客观题，满分 100 分。'
+    },
+    {
+      id: 5,
+      title: '英语分级测试（正式）',
+      start: '2026-09-09',
+      end: '2026-09-10',
+      type: 'normal',
+      source: '教务处通知',
+      description: '定于 9月9日 8:00 — 9月10日 24:00 进行 2026 级新生入学英语分级测试，线上进行，请用电脑独立完成。内容为听力、阅读、词汇语法、完型填空四部分客观题，满分 100 分。'
+    }
+  ];
 
-      <p><b>部署形态。</b>网站本体先托管在 GitHub Pages（无域名时期也能公网访问、可灾备）；等树莓派与外接硬盘就绪后，再把资源下载服务迁移过去。两套环境共用同一份手写 HTML，内容始终一致。</p>
+  const TYPE_META = {
+    urgent: { label: '紧急截止', color: '#e5484d', bg: '#fdecec' },
+    normal: { label: '常规通知', color: '#3b82f6', bg: '#eaf1fe' },
+    party:  { label: '党团相关', color: '#22c55e', bg: '#e8f8ee' }
+  };
 
-      <!-- 项目概略图：架构示意（内联 SVG，零外部依赖） -->
-      <svg class="diagram" viewBox="0 0 760 320" role="img" aria-label="部署架构概略图：访客经 GitHub Pages 访问网站本体，经树莓派与外接硬盘访问口令保护的下载服务">
-        <defs>
-          <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
-            <path d="M0,0 L7,3 L0,6 Z" class="diag-accent"/>
-          </marker>
-        </defs>
+  /* ---------- 日期工具 ---------- */
+  function parseDate(str) {
+    const parts = str.split('-').map(Number);
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+  function formatISO(d) {
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + m + '-' + day;
+  }
+  function addDays(str, n) {
+    const d = parseDate(str);
+    d.setDate(d.getDate() + n);
+    return formatISO(d);
+  }
+  function formatCN(str) {
+    const d = parseDate(str);
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
+  function formatShort(str) {
+    const d = parseDate(str);
+    return (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
 
-        <!-- 访客 -->
-        <rect class="diag-box" x="30" y="125" width="130" height="70" rx="12"/>
-        <text class="diag-title" x="95" y="155" text-anchor="middle">访客浏览器</text>
-        <text class="diag-sub" x="95" y="175" text-anchor="middle">手机 / 桌面</text>
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-        <!-- GitHub Pages -->
-        <rect class="diag-box" x="250" y="35" width="200" height="72" rx="12"/>
-        <text class="diag-title" x="350" y="66" text-anchor="middle">GitHub Pages</text>
-        <text class="diag-sub" x="350" y="86" text-anchor="middle">网站本体 · 公网 · 可灾备</text>
+  function deadlineOf(n) { return parseDate(n.end || n.start); }
+  function isInProgress(n) {
+    const s = parseDate(n.start);
+    const e = deadlineOf(n);
+    return today >= s && today <= e;
+  }
+  function daysToDeadline(n) {
+    return Math.round((deadlineOf(n) - today) / 86400000);
+  }
+  function isUpcoming(n) {
+    const d = daysToDeadline(n);
+    return d >= 0 && d <= 3;
+  }
 
-        <!-- 树莓派 3B -->
-        <rect class="diag-box" x="250" y="200" width="200" height="72" rx="12"/>
-        <text class="diag-title" x="350" y="231" text-anchor="middle">树莓派 3B</text>
-        <text class="diag-sub" x="350" y="251" text-anchor="middle">家庭宽带出口 · 静态站</text>
+  /* ---------- 渲染辅助 ---------- */
+  function badgeHTML(n) {
+    const m = TYPE_META[n.type];
+    return '<span class="badge" style="background:' + m.bg + ';color:' + m.color + '">' + m.label + '</span>';
+  }
+  function remainChip(n) {
+    const d = daysToDeadline(n);
+    if (d === 0) return '<span class="chip chip-today">今天截止</span>';
+    if (d === 1) return '<span class="chip chip-urgent">剩1天</span>';
+    return '<span class="chip chip-urgent">剩' + d + '天</span>';
+  }
+  function rangeText(n) {
+    return n.end ? formatShort(n.start) + ' – ' + formatShort(n.end) : formatShort(n.start);
+  }
 
-        <!-- 外接硬盘 / 下载 -->
-        <rect class="diag-box" x="510" y="200" width="220" height="72" rx="12"/>
-        <text class="diag-title" x="620" y="231" text-anchor="middle">外接硬盘</text>
-        <text class="diag-sub" x="620" y="251" text-anchor="middle">下载服务 · 口令保护</text>
+  /* ---------- 弹窗 ---------- */
+  const overlay = document.getElementById('modal-overlay');
+  const modalContent = document.getElementById('modal-content');
 
-        <!-- 连线 -->
-        <path class="diag-line" d="M160 150 C200 120, 210 90, 248 70" marker-end="url(#arrow)"/>
-        <text class="diag-label" x="205" y="104" text-anchor="middle">网站</text>
-        <path class="diag-line" d="M160 170 C200 200, 210 220, 248 236" marker-end="url(#arrow)"/>
-        <text class="diag-label" x="205" y="216" text-anchor="middle">下载</text>
-        <path class="diag-line" d="M450 236 H506" marker-end="url(#arrow)"/>
-      </svg>
+  function openModal() {
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) closeModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeModal();
+  });
 
-      <p><b>成果。</b>单页 HTML+CSS+JS 控制在 300KB 以内，首屏无需等待；全站展示图总量 ≤10MB。下载服务由 Web 服务器的 Basic Auth 承担口令校验，前端零依赖、零改动即可生效。</p>
+  function showEventDetail(n) {
+    const m = TYPE_META[n.type];
+    const rangeRows = n.end
+      ? '<div class="meta-row"><span class="meta-label">开始日期</span><span>' + formatCN(n.start) + '</span></div>' +
+        '<div class="meta-row"><span class="meta-label">截止日期</span><span>' + formatCN(n.end) + '</span></div>'
+      : '<div class="meta-row"><span class="meta-label">日期</span><span>' + formatCN(n.start) + '</span></div>';
 
-      <div class="tags">
-        <span class="tag">HTML / CSS / JS</span>
-        <span class="tag">树莓派 3B（1GB）</span>
-        <span class="tag">Nginx / Caddy</span>
-        <span class="tag">GitHub Pages</span>
-        <span class="tag">相对路径 · 无硬编码域名</span>
-      </div>
-    </div>
-  </section>
+    modalContent.innerHTML =
+      '<div class="modal-head">' +
+        '<h2>' + n.title + '</h2>' +
+        badgeHTML(n) +
+      '</div>' +
+      '<div class="meta">' +
+        rangeRows +
+        '<div class="meta-row"><span class="meta-label">通知来源</span><span>' + n.source + '</span></div>' +
+      '</div>' +
+      '<div class="desc">' +
+        '<div class="desc-label">需要做什么</div>' +
+        '<p>' + n.description + '</p>' +
+      '</div>';
+    openModal();
+  }
 
-  <section class="container" id="blog">
-    <h2 class="section-title">最新文章</h2>
-    <div class="empty">
-      <div class="big">这里还空空如也~</div>
-      <div class="sub">博客即将上线，预计每月更新一篇。先去「项目」看看我在做什么吧。</div>
-    </div>
-  </section>
+  function showDayEvents(dateStr) {
+    const list = notices.filter(function (n) {
+      const s = parseDate(n.start);
+      const e = deadlineOf(n);
+      const d = parseDate(dateStr);
+      return d >= s && d <= e;
+    });
 
-  <section class="container" id="download">
-    <h2 class="section-title">资源下载</h2>
-    <div class="notice">
-      <b>下载服务运行在树莓派上</b>，由外接硬盘提供图片与短视频资源，访问需口令。
-      如需取用，请邮件联系站主索取口令。该服务上线前，此处暂以 GitHub Pages 承载网站本体。
-    </div>
-  </section>
-</main>
+    const body = list.length
+      ? list.map(function (n) {
+          const m = TYPE_META[n.type];
+          return '<button class="day-event-item" data-id="' + n.id + '">' +
+                   '<span class="dot" style="background:' + m.color + '"></span>' +
+                   '<span class="day-event-title">' + n.title + '</span>' +
+                   '<span class="day-event-meta">' + n.source + '</span>' +
+                 '</button>';
+        }).join('')
+      : '<p class="empty">当天没有通知</p>';
 
-<footer class="footer">
-  © <span id="year"></span> TIBIN ·
-  联系 <a href="https://github.com/tibin33" target="_blank" rel="noopener">GitHub</a>
-  （下载口令请邮件联系 <a href="mailto:you@example.com">you@example.com</a>）·
-  站点托管于 GitHub Pages 与树莓派
-</footer>
+    modalContent.innerHTML =
+      '<div class="modal-head"><h2>' + formatCN(dateStr) + ' 的通知</h2></div>' +
+      '<div class="day-list">' + body + '</div>';
 
-<script>
-  document.getElementById('year').textContent = new Date().getFullYear();
-</script>
+    modalContent.querySelectorAll('.day-event-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const n = notices.find(function (x) { return x.id === Number(btn.dataset.id); });
+        if (n) showEventDetail(n);
+      });
+    });
+    openModal();
+  }
+
+  /* ---------- 侧栏列表 ---------- */
+  function renderList(listEl, items, renderItem) {
+    if (!items.length) {
+      listEl.innerHTML = '<li class="empty">暂无相关通知</li>';
+      return;
+    }
+    listEl.innerHTML = items.map(renderItem).join('');
+    listEl.querySelectorAll('.notice-item').forEach(function (el) {
+      el.addEventListener('click', function () {
+        const n = notices.find(function (x) { return x.id === Number(el.dataset.id); });
+        if (n) showEventDetail(n);
+      });
+    });
+  }
+
+  function itemHTML(n, opts) {
+    opts = opts || {};
+    return '<li class="notice-item type-' + n.type + '" data-id="' + n.id + '">' +
+             '<div class="row1">' +
+               '<span class="title">' + n.title + '</span>' +
+               badgeHTML(n) +
+             '</div>' +
+             '<div class="meta">' +
+               '<span>' + rangeText(n) + '</span>' +
+               (opts.remain ? '<span>' + remainChip(n) + '</span>' : '') +
+               '<span>· ' + n.source + '</span>' +
+             '</div>' +
+           '</li>';
+  }
+
+  function renderAll() {
+    const inProgress = notices.filter(isInProgress);
+    const upcoming = notices.filter(isUpcoming);
+    const all = notices.slice().sort(function (a, b) {
+      return parseDate(a.start) - parseDate(b.start);
+    });
+
+    renderList(document.getElementById('inprogress-list'), inProgress, function (n) { return itemHTML(n); });
+    renderList(document.getElementById('deadline-list'), upcoming, function (n) { return itemHTML(n, { remain: true }); });
+    renderList(document.getElementById('all-list'), all, function (n) { return itemHTML(n); });
+
+    document.getElementById('inprogress-count').textContent = inProgress.length;
+    document.getElementById('deadline-count').textContent = upcoming.length;
+    document.getElementById('all-count').textContent = all.length;
+
+    const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+    document.getElementById('today-panel').innerHTML =
+      '<div class="today-date">' + today.getFullYear() + '年' + (today.getMonth() + 1) + '月' + today.getDate() +
+      '日 · 星期' + weekdays[today.getDay()] + '</div>' +
+      '<div class="today-stats">' +
+        '<span>进行中 <b>' + inProgress.length + '</b></span>' +
+        '<span>即将截止 <b>' + upcoming.length + '</b></span>' +
+      '</div>';
+  }
+
+  /* ---------- 日历初始化 ---------- */
+  function toEvent(n) {
+    const m = TYPE_META[n.type];
+    return {
+      id: String(n.id),
+      title: n.title,
+      start: n.start,
+      end: n.end ? addDays(n.end, 1) : undefined,
+      allDay: true,
+      backgroundColor: m.color,
+      borderColor: m.color,
+      textColor: '#ffffff',
+      classNames: ['notice-event', 'type-' + n.type],
+      extendedProps: { noticeId: n.id }
+    };
+  }
+
+  function initCalendar() {
+    const el = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(el, {
+      locale: 'zh-cn',
+      initialView: 'dayGridMonth',
+      firstDay: 1,
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,listMonth'
+      },
+      buttonText: { today: '今天', month: '月', listMonth: '列表' },
+      height: 'auto',
+      events: notices.map(toEvent),
+      displayEventTime: false,
+      eventClick: function (info) {
+        const n = notices.find(function (x) { return x.id === Number(info.event.extendedProps.noticeId); });
+        if (n) showEventDetail(n);
+      },
+      dateClick: function (info) {
+        showDayEvents(info.dateStr);
+      },
+      eventDidMount: function (info) {
+        info.el.title = info.event.title;
+      }
+    });
+    calendar.render();
+  }
+
+  renderAll();
+
+  if (typeof FullCalendar !== 'undefined') {
+    initCalendar();
+  } else {
+    document.getElementById('calendar').innerHTML =
+      '<p class="empty">日历组件加载失败，请检查网络后刷新页面。下方列表仍可正常查看全部通知。</p>';
+  }
+  </script>
 </body>
 </html>
